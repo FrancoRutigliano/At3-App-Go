@@ -2,7 +2,10 @@ module at3-back
 
 go 1.23.0
 
-require github.com/gofiber/fiber/v2 v2.52.5
+require (
+	github.com/gofiber/fiber/v2 v2.52.5
+	github.com/joho/godotenv v1.5.1
+)
 
 require (
 	github.com/andybalholm/brotli v1.0.5 // indirect
