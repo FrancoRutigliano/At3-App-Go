@@ -18,7 +18,7 @@ func (a *AuthImpl) New() {
 
 	db, err := data.GetConnection()
 	if err != nil {
-		log.Fatal("error to instance db")
+		log.Fatal("error to instance db -->", err)
 	}
 
 	a.Impl = &authUseCaseImpl.Auth{

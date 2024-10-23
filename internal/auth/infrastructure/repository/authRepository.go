@@ -10,5 +10,5 @@ type ImplSqlx struct {
 }
 
 func (r *SqlxRepository) New() {
-	r.Impl = ImplSqlx{}
+	r.Impl = &ImplSqlx{}
 }

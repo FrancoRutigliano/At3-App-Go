@@ -12,7 +12,7 @@ func (a *Auth) Register(c *fiber.Ctx) error {
 	var payload authDto.RegisterUser
 
 	response := validator.Payload(c, &payload)
-	if response.StatusCode != http.StatusOK {
+	if response.StatusCode != 0 {
 		return c.Status(response.StatusCode).JSON(fiber.Map{"message": response.Msg, "details": "false"})
 	}
 

@@ -13,5 +13,6 @@ func Init(r fiber.Router) {
 	//r.Post("/login")
 	r.Post("/register", c.Register)
 	//r.Post("/reset")
+	//r.Get(/confirm_account)
 
 }
