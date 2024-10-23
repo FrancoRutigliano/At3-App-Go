@@ -1,6 +1,7 @@
 package data
 
 import (
+	"log"
 	"os"
 
 	"github.com/jmoiron/sqlx"
@@ -8,9 +9,10 @@ import (
 )
 
 func GetConnection() (*sqlx.DB, error) {
-
-	db, err := sqlx.Connect("postgres", os.Getenv("CONNECTION"))
+	connstr := os.Getenv("CONNECTION")
+	db, err := sqlx.Connect("postgres", connstr)
 	if err != nil {
+		log.Println(err.Error())
 		return nil, err
 	}
 	return db, nil
