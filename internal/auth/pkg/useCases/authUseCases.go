@@ -29,12 +29,12 @@ func (a *AuthImpl) New() {
 
 	var jwtService service.JwtService
 
-	jwtService.New(os.Getenv("SECRET_KEY"), os.Getenv("JWT_EXP"))
+	jS := jwtService.New()
 
 	a.Impl = &authUseCaseImpl.Auth{
 		Repository:   repository,
 		Db:           db,
 		EmailService: emailService,
-		JwtService:   jwtService,
+		JwtService:   *jS,
 	}
 }

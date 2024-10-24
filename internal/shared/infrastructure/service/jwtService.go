@@ -1,30 +1,63 @@
 package service
 
-import "github.com/golang-jwt/jwt"
+import (
+	"fmt"
+	"os"
+	"time"
+
+	"github.com/golang-jwt/jwt"
+)
 
 type JwtService struct {
-	secretKey string
-	duration  string
 }
 
-func (j *JwtService) New(secretKey string, tokenDuration string) *JwtService {
-	return &JwtService{
-		secretKey: secretKey,
-		duration:  tokenDuration,
-	}
+func (j *JwtService) New() *JwtService {
+	return &JwtService{}
 }
 
-func (j *JwtService) GenerateToken(uuid string) (string, error) {
+func (j *JwtService) GenerateTokenRegister(uuid string) (string, error) {
 
 	t := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"userId": uuid,
-		"exp":    j.duration,
+		"exp":    time.Now().Add(time.Hour * 24).Unix(),
 	})
 
-	token, err := t.SignedString([]byte(j.secretKey))
+	token, err := t.SignedString([]byte(os.Getenv("SECRET_KEY")))
 	if err != nil {
 		return "", err
 	}
 
 	return token, nil
+}
+
+func (j *JwtService) ValidateTokenFromQuery(tokenS string) (*jwt.Token, error) {
+	token, err := jwt.Parse(tokenS, func(t *jwt.Token) (interface{}, error) {
+		if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("unexpected signing method: %s", t.Header["alg"])
+		}
+		return []byte(os.Getenv("SECRET_KEY")), nil
+	})
+	if err != nil {
+		return nil, err
+	}
+	return token, nil
+}
+
+func (j *JwtService) GetUUIdFromToken(token *jwt.Token) (string, error) {
+
+	if !token.Valid {
+		return "", fmt.Errorf("invalid token on uuid")
+	}
+
+	claims, ok := token.Claims.(jwt.MapClaims)
+	if !ok {
+		return "", fmt.Errorf("invalid claims")
+	}
+
+	id, ok := claims["userId"].(string)
+	if !ok {
+		return "", fmt.Errorf("uuid not found in claims")
+	}
+
+	return id, nil
 }
