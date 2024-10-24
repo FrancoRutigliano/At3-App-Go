@@ -6,10 +6,6 @@ import (
 	"github.com/wneessen/go-mail"
 )
 
-type EmailServiceInterface interface {
-	SendRegisterEmail(to, token string) error
-}
-
 type EmailService struct {
 	Mailer *mail.Client
 	From   string
@@ -53,7 +49,7 @@ func generateEmailBody(token string) string {
         <head><title>Confirma tu cuenta</title></head>
         <body>
             <p>Gracias por registrarte. Por favor confirma tu cuenta haciendo clic en el siguiente enlace:</p>
-            <a href="http://frontend-url/confirm?token=` + token + `">Confirmar cuenta</a>
+            <a href="https://app.atomico3.io/confirm_account?token=` + token + `">Confirmar cuenta</a>
         </body>
     </html>`
 }

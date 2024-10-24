@@ -49,13 +49,18 @@ func (a *Auth) Register(payload authDto.RegisterUser) httpresponse.ApiResponse {
 
 	err = a.Repository.Impl.CreateUserAccount(user, a.Db)
 	if err != nil {
-		return *httpresponse.NewApiError(http.StatusInternalServerError, err.Error(), nil)
+		return *httpresponse.NewApiError(http.StatusInternalServerError, "Oops somenthing went wrong", nil)
 	}
 
-	err = a.EmailService.SendRegisterEmail(payload.Email, "12345")
+	token, err := a.JwtService.GenerateToken(uuid)
 	if err != nil {
-		return *httpresponse.NewApiError(http.StatusServiceUnavailable, err.Error(), nil)
+		return *httpresponse.NewApiError(http.StatusInternalServerError, "Oops somenthing went wrong", nil)
 	}
 
-	return *httpresponse.NewApiError(http.StatusCreated, "Registration successful, please check your email to confirm your account. ", nil)
+	err = a.EmailService.SendRegisterEmail(payload.Email, token)
+	if err != nil {
+		return *httpresponse.NewApiError(http.StatusServiceUnavailable, "Service error: Unavailable sending email", nil)
+	}
+
+	return *httpresponse.NewApiError(http.StatusCreated, "Registration successfully, please check your email to confirm your account. ", token)
 }

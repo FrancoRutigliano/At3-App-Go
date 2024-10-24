@@ -27,9 +27,14 @@ func (a *AuthImpl) New() {
 
 	emailService.New(os.Getenv("SMTP_HOST"), "465", "no-reply@atomico3.io", os.Getenv("MAIL_PASSWORD"))
 
+	var jwtService service.JwtService
+
+	jwtService.New(os.Getenv("SECRET_KEY"), os.Getenv("JWT_EXP"))
+
 	a.Impl = &authUseCaseImpl.Auth{
 		Repository:   repository,
 		Db:           db,
 		EmailService: emailService,
+		JwtService:   jwtService,
 	}
 }

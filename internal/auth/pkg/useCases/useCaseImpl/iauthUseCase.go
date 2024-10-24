@@ -17,4 +17,5 @@ type Auth struct {
 	Repository   infraSqlxRepository.SqlxRepository
 	Db           *sqlx.DB
 	EmailService service.EmailService
+	JwtService   service.JwtService
 }
