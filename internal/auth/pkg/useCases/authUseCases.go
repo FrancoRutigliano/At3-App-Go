@@ -1,15 +1,40 @@
 package authUseCases
 
-import authUseCaseImpl "at3-back/internal/auth/pkg/useCases/useCaseImpl"
+import (
+	infraSqlxRepository "at3-back/internal/auth/infrastructure/repository"
+	authUseCaseImpl "at3-back/internal/auth/pkg/useCases/useCaseImpl"
+	"at3-back/internal/shared/infrastructure/data"
+	"at3-back/internal/shared/infrastructure/service"
+	"log"
+	"os"
+)
 
 type AuthImpl struct {
-	impl authUseCaseImpl.IauthUseCase
+	Impl authUseCaseImpl.IauthUseCase
 }
 
 func (a *AuthImpl) New() {
-	// se inicializa repositorio
-	// new repositorio
-	//instancia base de datos
+	var repository infraSqlxRepository.SqlxRepository
 
-	// llamar estructura que implementa
+	repository.New()
+
+	db, err := data.GetConnection()
+	if err != nil {
+		log.Fatal("error to instance db")
+	}
+
+	var emailService service.EmailService
+
+	emailService.New(os.Getenv("SMTP_HOST"), "465", "no-reply@atomico3.io", os.Getenv("MAIL_PASSWORD"))
+
+	var jwtService service.JwtService
+
+	jwtService.New(os.Getenv("SECRET_KEY"), os.Getenv("JWT_EXP"))
+
+	a.Impl = &authUseCaseImpl.Auth{
+		Repository:   repository,
+		Db:           db,
+		EmailService: emailService,
+		JwtService:   jwtService,
+	}
 }
