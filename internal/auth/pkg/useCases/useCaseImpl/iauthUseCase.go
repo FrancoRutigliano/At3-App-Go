@@ -11,6 +11,7 @@ import (
 
 type IauthUseCase interface {
 	Register(authDto.RegisterUser) httpresponse.ApiResponse
+	Confirm(string) httpresponse.ApiResponse
 }
 
 type Auth struct {

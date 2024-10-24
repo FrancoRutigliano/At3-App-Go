@@ -12,7 +12,7 @@ func Init(r fiber.Router) {
 
 	//r.Post("/login")
 	r.Post("/register", c.Register)
+	r.Get("/confirm_account", c.Confirm_account)
 	//r.Post("/reset")
-	//r.Get(/confirm_account)
 
 }

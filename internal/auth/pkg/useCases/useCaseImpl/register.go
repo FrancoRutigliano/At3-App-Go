@@ -52,7 +52,7 @@ func (a *Auth) Register(payload authDto.RegisterUser) httpresponse.ApiResponse {
 		return *httpresponse.NewApiError(http.StatusInternalServerError, "Oops somenthing went wrong", nil)
 	}
 
-	token, err := a.JwtService.GenerateToken(uuid)
+	token, err := a.JwtService.GenerateTokenRegister(uuid)
 	if err != nil {
 		return *httpresponse.NewApiError(http.StatusInternalServerError, "Oops somenthing went wrong", nil)
 	}
