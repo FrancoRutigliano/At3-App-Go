@@ -15,14 +15,24 @@ func (j *JwtService) New() *JwtService {
 	return &JwtService{}
 }
 
-func (j *JwtService) GenerateTokenRegister(uuid string) (string, error) {
+func (j *JwtService) GenerateTokenRegister(data map[string]interface{}) (string, error) {
+	claims := jwt.MapClaims{
+		"exp": time.Now().Add(time.Hour * 24).Unix(),
+	}
 
-	t := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"userId": uuid,
-		"exp":    time.Now().Add(time.Hour * 24).Unix(),
-	})
+	for key, value := range data {
+		claims[key] = value
+	}
 
-	token, err := t.SignedString([]byte(os.Getenv("SECRET_KEY")))
+	// Cambiamos a HS256 para firmar con una clave secreta en texto plano
+	t := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+
+	secret := os.Getenv("SECRET_KEY")
+	if secret == "" {
+		return "", fmt.Errorf("SECRET_KEY no está configurado")
+	}
+
+	token, err := t.SignedString([]byte(secret))
 	if err != nil {
 		return "", err
 	}
