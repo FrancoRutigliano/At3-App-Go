@@ -10,7 +10,7 @@ func Init(r fiber.Router) {
 	var c authController.Auth
 	c.New()
 
-	//r.Post("/login")
+	r.Post("/login", c.Login)
 	r.Post("/register", c.Register)
 	r.Get("/confirm_account", c.Confirm_account)
 	//r.Post("/reset")

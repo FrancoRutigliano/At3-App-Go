@@ -10,4 +10,5 @@ type Repository interface {
 	FindByEmail(string, *sqlx.DB) (bool, error)
 	CreateUserAccount(*authDto.RegisterDb, *sqlx.DB) error
 	FindByIdUpdate(string, *sqlx.DB) (bool, error)
+	GetUser(authDto.LoginRequest, *sqlx.DB) (authDto.LoginResponse, error)
 }
