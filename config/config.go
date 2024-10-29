@@ -1,7 +1,6 @@
 package config
 
 import (
-	"errors"
 	"os"
 
 	"github.com/joho/godotenv"
@@ -24,34 +23,34 @@ func SetUp() (*Config, error) {
 	}
 
 	port := os.Getenv("PORT")
-	if port == "" {
-		return nil, errors.New("port is empty")
-	}
+	// if port == "" {
+	// 	return nil, errors.New("port is empty")
+	// }
 
 	user := os.Getenv("POSTGRES_USER")
-	if user == "" {
-		return nil, errors.New("userDb is empty")
-	}
+	// if user == "" {
+	// 	return nil, errors.New("userDb is empty")
+	// }
 
 	pass := os.Getenv("POSTGRES_PASSWORD")
-	if pass == "" {
-		return nil, errors.New("passDb is empty")
-	}
+	// if pass == "" {
+	// 	return nil, errors.New("passDb is empty")
+	// }
 
 	db := os.Getenv("POSTGRES_DB")
-	if db == "" {
-		return nil, errors.New("db is empty")
-	}
+	// if db == "" {
+	// 	return nil, errors.New("db is empty")
+	// }
 
 	host := os.Getenv("POSTGRES_HOST")
-	if host == "" {
-		return nil, errors.New("host is empty")
-	}
+	// if host == "" {
+	// 	return nil, errors.New("host is empty")
+	// }
 
 	migrate := os.Getenv("ROUTE_MIGRATE")
-	if migrate == "" {
-		return nil, errors.New("route migrate is empty")
-	}
+	// if migrate == "" {
+	// 	return nil, errors.New("route migrate is empty")
+	// }
 
 	return &Config{
 		Port:             port,
