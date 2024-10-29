@@ -1,16 +1,20 @@
 package httpserver
 
 import (
+	"at3-back/config"
 	"at3-back/internal/shared/infrastructure/entrypoint/http_server/routes"
 
 	"github.com/gofiber/fiber/v2"
 )
 
 type Server struct {
+	config *config.Config
 }
 
-func NewServer() *Server {
-	return &Server{}
+func NewServer(config *config.Config) *Server {
+	return &Server{
+		config: config,
+	}
 }
 
 func (s *Server) Run() error {
