@@ -64,7 +64,7 @@ func (j *JwtService) GetUUIdFromToken(token *jwt.Token) (string, error) {
 		return "", fmt.Errorf("invalid claims")
 	}
 
-	id, ok := claims["userId"].(string)
+	id, ok := claims["uuid"].(string)
 	if !ok {
 		return "", fmt.Errorf("uuid not found in claims")
 	}
