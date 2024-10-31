@@ -28,22 +28,22 @@ func (a *Auth) Confirm(tokenS string) httpresponse.ApiResponse {
 	if err == redis.Nil {
 		return *httpresponse.NewApiError(http.StatusNotFound, "User not found or expired", nil)
 	} else if err != nil {
-		return *httpresponse.NewApiError(http.StatusInternalServerError, err.Error(), nil)
+		return *httpresponse.NewApiError(http.StatusInternalServerError, "can't get user", nil)
 	}
 
 	err = json.Unmarshal([]byte(userJson), &user)
 	if err != nil {
-		return *httpresponse.NewApiError(http.StatusInternalServerError, err.Error(), nil)
+		return *httpresponse.NewApiError(http.StatusInternalServerError, "Oops somenthing went wrong", nil)
 	}
 
 	err = a.Repository.Impl.CreateUserAccount(&user, a.Db)
 	if err != nil {
-		return *httpresponse.NewApiError(http.StatusInternalServerError, err.Error(), nil)
+		return *httpresponse.NewApiError(http.StatusInternalServerError, "can't create user on db", nil)
 	}
 
 	err = a.Redis.Del(ctx, "uuid:"+id).Err()
 	if err != nil {
-		return *httpresponse.NewApiError(http.StatusInternalServerError, err.Error(), nil)
+		return *httpresponse.NewApiError(http.StatusInternalServerError, "Oops somenthing went wrong", nil)
 	}
 
 	return *httpresponse.NewApiError(http.StatusOK, "user validated", nil)

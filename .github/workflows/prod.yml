@@ -22,6 +22,8 @@ jobs:
           SMTP_HOST: ${{ secrets.SMTP_HOST }}
           MAIL_PASSWORD: ${{ secrets.MAIL_PASSWORD }}
           SECRET_KEY: ${{ secrets.SECRET_KEY }}
+          REDIS_HOST: ${{ secrets.REDIS_HOST }}
+          REDIS_PASS: ${{ secrets.REDIS_PASS }}
         run: |
           echo "PORT=${PORT}" > .env
           echo "ROUTE_MIGRATE=${ROUTE_MIGRATE}" >> .env
@@ -29,6 +31,8 @@ jobs:
           echo "SMTP_HOST=${SMTP_HOST}" >> .env
           echo "MAIL_PASSWORD=${MAIL_PASSWORD}" >> .env
           echo "SECRET_KEY=${SECRET_KEY}" >> .env
+          echo "REDIS_HOST=${REDIS_HOST}" >> .env
+          echo "REDIS_PASS=${REDIS_PASS}" >> .env
 
       - name: Log in to GitHub Container Registry
         uses: docker/login-action@v2
