@@ -5,12 +5,17 @@ import (
 	hash "at3-back/pkg/auth"
 	httpresponse "at3-back/pkg/httpResponse"
 	"at3-back/pkg/validator"
+	"context"
+	"encoding/json"
 	"net/http"
+	"time"
 
 	"github.com/google/uuid"
 )
 
 func (a *Auth) Register(payload authDto.RegisterUser) httpresponse.ApiResponse {
+	var ctx = context.Background()
+
 	exists, err := a.Repository.Impl.FindByEmail(payload.Email, a.Db)
 	if err != nil {
 		return *httpresponse.NewApiError(http.StatusInternalServerError, err.Error(), nil)
@@ -47,10 +52,19 @@ func (a *Auth) Register(payload authDto.RegisterUser) httpresponse.ApiResponse {
 		UpdatedAt:        updatedUnix,
 	}
 
-	err = a.Repository.Impl.CreateUserAccount(user, a.Db)
+	userJson, err := json.Marshal(user)
 	if err != nil {
-		return *httpresponse.NewApiError(http.StatusInternalServerError, "Oops somenthing went wrong", nil)
+		return *httpresponse.NewApiError(http.StatusInternalServerError, err.Error(), nil)
 	}
+
+	err = a.Redis.Set(ctx, "uuid:"+user.ID, userJson, 24*time.Hour).Err()
+	if err != nil {
+		return *httpresponse.NewApiError(http.StatusInternalServerError, err.Error(), nil)
+	}
+	// err = a.Repository.Impl.CreateUserAccount(user, a.Db)
+	// if err != nil {
+	// 	return *httpresponse.NewApiError(http.StatusInternalServerError, "Oops somenthing went wrong", nil)
+	// }
 
 	token, err := a.JwtService.GenerateTokenRegister(map[string]interface{}{
 		"uuid": uuid,

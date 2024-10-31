@@ -23,6 +23,11 @@ func (a *AuthImpl) New() {
 		log.Fatal("error to instance db")
 	}
 
+	redis, err := data.NewRedisConnnection()
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	var emailService service.EmailService
 
 	emailService.New(os.Getenv("SMTP_HOST"), "465", "no-reply@atomico3.io", os.Getenv("MAIL_PASSWORD"))
@@ -34,6 +39,7 @@ func (a *AuthImpl) New() {
 	a.Impl = &authUseCaseImpl.Auth{
 		Repository:   repository,
 		Db:           db,
+		Redis:        redis,
 		EmailService: emailService,
 		JwtService:   *jS,
 	}

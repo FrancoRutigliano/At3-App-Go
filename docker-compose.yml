@@ -13,6 +13,15 @@ services:
     depends_on:
       - db
 
+  redis:
+    image: redis:6.2-alpine
+    restart: unless-stopped
+    container_name: redis
+    ports:
+      - "6379:6379"
+    command: redis-server  --loglevel verbose --appendonly yes --requirepass ${REDIS_PASS}
+
+
   db:
     image: postgres:15
     container_name: container_db
