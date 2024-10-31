@@ -7,6 +7,7 @@ import (
 	httpresponse "at3-back/pkg/httpResponse"
 
 	"github.com/jmoiron/sqlx"
+	"github.com/redis/go-redis/v9"
 )
 
 type IauthUseCase interface {
@@ -18,6 +19,7 @@ type IauthUseCase interface {
 type Auth struct {
 	Repository   infraSqlxRepository.SqlxRepository
 	Db           *sqlx.DB
+	Redis        *redis.Client
 	EmailService service.EmailService
 	JwtService   service.JwtService
 }

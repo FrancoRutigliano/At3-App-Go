@@ -1,6 +1,7 @@
 package service
 
 import (
+	"fmt"
 	"log"
 
 	"github.com/wneessen/go-mail"
@@ -45,7 +46,7 @@ func (e *EmailService) SendRegisterEmail(to, token string) error {
 }
 
 func generateEmailBody(token string) string {
-	return `<!DOCTYPE html>
+	return fmt.Sprintf(`<!DOCTYPE html>
 <html lang="es">
   <head>
     <meta charset="UTF-8" />
@@ -104,8 +105,7 @@ func generateEmailBody(token string) string {
       <h1>Confirmación de Cuenta</h1>
       <p>Gracias por registrarte. Por favor confirma tu cuenta haciendo clic en el siguiente enlace:</p>
       <div class="cta">
-        <a href="https://app.atomico3.io/confirm_account">
-          <span style="display: none;">` + token + `</span>
+        <a href="https://app.atomico3.io/confirm_account?token=%s">
           Confirmar cuenta
         </a>
       </div>
@@ -117,5 +117,5 @@ func generateEmailBody(token string) string {
       </div>
     </div>
   </body>
-</html>`
+</html>`, token)
 }

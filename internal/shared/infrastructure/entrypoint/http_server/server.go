@@ -3,6 +3,7 @@ package httpserver
 import (
 	"at3-back/config"
 	"at3-back/internal/shared/infrastructure/entrypoint/http_server/routes"
+	"os"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -22,5 +23,5 @@ func (s *Server) Run() error {
 
 	routes.Init(app)
 
-	return app.Listen(":8080")
+	return app.Listen(os.Getenv("PORT"))
 }
