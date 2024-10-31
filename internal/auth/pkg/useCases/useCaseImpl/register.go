@@ -18,7 +18,7 @@ func (a *Auth) Register(payload authDto.RegisterUser) httpresponse.ApiResponse {
 
 	exists, err := a.Repository.Impl.FindByEmail(payload.Email, a.Db)
 	if err != nil {
-		return *httpresponse.NewApiError(http.StatusInternalServerError, err.Error(), nil)
+		return *httpresponse.NewApiError(http.StatusInternalServerError, "Oops somenthing went wrong", nil)
 	}
 	if exists {
 		return *httpresponse.NewApiError(http.StatusBadRequest, "email already exist", nil)
@@ -28,7 +28,7 @@ func (a *Auth) Register(payload authDto.RegisterUser) httpresponse.ApiResponse {
 
 	hashed, err := hash.HashPassword(payload.Password)
 	if err != nil {
-		return *httpresponse.NewApiError(http.StatusInternalServerError, err.Error(), nil)
+		return *httpresponse.NewApiError(http.StatusInternalServerError, "Oops somenthing went wrong", nil)
 	}
 
 	// parsear fechas
@@ -54,17 +54,13 @@ func (a *Auth) Register(payload authDto.RegisterUser) httpresponse.ApiResponse {
 
 	userJson, err := json.Marshal(user)
 	if err != nil {
-		return *httpresponse.NewApiError(http.StatusInternalServerError, err.Error(), nil)
+		return *httpresponse.NewApiError(http.StatusInternalServerError, "Oops somenthing went wrong", nil)
 	}
 
 	err = a.Redis.Set(ctx, "uuid:"+user.ID, userJson, 24*time.Hour).Err()
 	if err != nil {
-		return *httpresponse.NewApiError(http.StatusInternalServerError, err.Error(), nil)
+		return *httpresponse.NewApiError(http.StatusInternalServerError, "Oops somenthing went wrong", nil)
 	}
-	// err = a.Repository.Impl.CreateUserAccount(user, a.Db)
-	// if err != nil {
-	// 	return *httpresponse.NewApiError(http.StatusInternalServerError, "Oops somenthing went wrong", nil)
-	// }
 
 	token, err := a.JwtService.GenerateTokenRegister(map[string]interface{}{
 		"uuid": uuid,

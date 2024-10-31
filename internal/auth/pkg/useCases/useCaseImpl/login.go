@@ -10,7 +10,7 @@ import (
 func (a *Auth) Login(payload authDto.LoginRequest) httpresponse.ApiResponse {
 	user, err := a.Repository.Impl.GetUser(payload, a.Db)
 	if err != nil {
-		return *httpresponse.NewApiError(http.StatusInternalServerError, err.Error(), nil)
+		return *httpresponse.NewApiError(http.StatusInternalServerError, "Oops somenthing went wrong", nil)
 	}
 
 	if !hash.ComparePasswords(user.Password, []byte(payload.Password)) {
@@ -22,7 +22,7 @@ func (a *Auth) Login(payload authDto.LoginRequest) httpresponse.ApiResponse {
 		"role": user.Role,
 	})
 	if err != nil {
-		return *httpresponse.NewApiError(http.StatusInternalServerError, err.Error(), nil)
+		return *httpresponse.NewApiError(http.StatusInternalServerError, "Oops somenthing went wrong", nil)
 	}
 
 	return *httpresponse.NewApiError(http.StatusOK, "succesfully login", token)
