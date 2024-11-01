@@ -3,6 +3,7 @@ package infraSqlxRepository
 import (
 	authDto "at3-back/internal/auth/pkg/domain/dto"
 	"database/sql"
+	"errors"
 	"fmt"
 	"log"
 
@@ -17,7 +18,7 @@ func (i *ImplSqlx) GetUser(paylod authDto.LoginRequest, db *sqlx.DB) (authDto.Lo
 
 	if err := db.Get(&user, query, paylod.Email); err != nil {
 		if err == sql.ErrNoRows {
-			return authDto.LoginResponse{}, fmt.Errorf("email not found: %s", paylod.Email)
+			return authDto.LoginResponse{}, errors.New("not_found")
 		}
 		log.Println(err.Error())
 		return authDto.LoginResponse{}, fmt.Errorf("error executing query")
