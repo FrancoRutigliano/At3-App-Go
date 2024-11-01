@@ -7,6 +7,8 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
+	"github.com/gofiber/fiber/v2/middleware/healthcheck"
+	"github.com/gofiber/fiber/v2/middleware/recover"
 )
 
 type Server struct {
@@ -21,6 +23,9 @@ func NewServer(config *config.Config) *Server {
 
 func (s *Server) Run() error {
 	app := fiber.New()
+
+	app.Use(recover.New())
+	app.Use(healthcheck.New())
 
 	app.Use(cors.New(cors.Config{
 		AllowOrigins: "https://app.atomico3.io, http://localhost:8080, http://localhost:8081",
