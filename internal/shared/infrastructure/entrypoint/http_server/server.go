@@ -6,6 +6,7 @@ import (
 	"os"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cors"
 )
 
 type Server struct {
@@ -20,6 +21,12 @@ func NewServer(config *config.Config) *Server {
 
 func (s *Server) Run() error {
 	app := fiber.New()
+
+	app.Use(cors.New(cors.Config{
+		AllowOrigins: "https://app.atomico3.io, http://localhost:8080, http://localhost:8081",
+		AllowMethods: "GET, POST, PUT, PATCH, DELETE, OPTIONS",
+		AllowHeaders: "Origin, Accept, Authorization, Content-Type, X-CSRF-Token",
+	}))
 
 	routes.Init(app)
 
