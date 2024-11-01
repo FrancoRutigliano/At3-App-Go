@@ -19,5 +19,5 @@ func (i *ImplSqlx) FindByEmail(emailParam string, db *sqlx.DB) (bool, error) {
 		return false, fmt.Errorf("error executing query: %w", err)
 	}
 
-	return true, fmt.Errorf("email: %s already exists", emailParam)
+	return true, nil
 }
