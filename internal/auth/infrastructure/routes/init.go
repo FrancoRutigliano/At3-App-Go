@@ -14,5 +14,5 @@ func Init(r fiber.Router) {
 	r.Post("/register", c.Register)
 	r.Get("/confirm_account", c.Confirm_account)
 	//r.Post("/reset")
-
+	r.Post("/register/company", c.RegisterCompany)
 }

@@ -13,9 +13,14 @@ func (a *Auth) Confirm_account(c *fiber.Ctx) error {
 		return c.Status(http.StatusBadRequest).JSON(fiber.Map{"message": "token required", "details": "false"})
 	}
 
-	response := a.handler.Impl.Confirm(token)
+	entity := c.Query("type")
+	if entity != "user" && entity != "company" {
+		return c.Status(http.StatusBadRequest).JSON(fiber.Map{"message": "invalid token", "details": "false"})
+	}
+
+	response := a.handler.Impl.Confirm(token, entity)
 	if response.StatusCode != http.StatusOK {
-		return c.Status(response.StatusCode).JSON(fiber.Map{"message": response.Msg, "data": response.Data, "details": "false"})
+		return c.Status(response.StatusCode).JSON(fiber.Map{"message": response.Msg, "details": "false"})
 	}
 
 	return c.Status(response.StatusCode).JSON(fiber.Map{"message": response.Msg, "data": response.Data, "details": "true"})

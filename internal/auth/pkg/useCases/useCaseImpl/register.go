@@ -5,7 +5,6 @@ import (
 	hash "at3-back/pkg/auth"
 	httpresponse "at3-back/pkg/httpResponse"
 	"at3-back/pkg/validator"
-	"context"
 	"encoding/json"
 	"net/http"
 	"time"
@@ -14,9 +13,8 @@ import (
 )
 
 func (a *Auth) Register(payload authDto.RegisterUser) httpresponse.ApiResponse {
-	var ctx = context.Background()
 
-	exists, err := a.Repository.Impl.FindByEmail(payload.Email, a.Db)
+	exists, err := a.Repository.Impl.FindByEmail(payload.Email, "users", a.Db)
 	if err != nil {
 		return *httpresponse.NewApiError(http.StatusInternalServerError, "Oops somenthing went wrong", nil)
 	}
@@ -57,7 +55,7 @@ func (a *Auth) Register(payload authDto.RegisterUser) httpresponse.ApiResponse {
 		return *httpresponse.NewApiError(http.StatusInternalServerError, "Oops somenthing went wrong", nil)
 	}
 
-	err = a.Redis.Set(ctx, "uuid:"+user.ID, userJson, 24*time.Hour).Err()
+	err = a.Redis.Set(a.Ctx, "uuid:"+user.ID, userJson, 24*time.Hour).Err()
 	if err != nil {
 		return *httpresponse.NewApiError(http.StatusInternalServerError, "Oops somenthing went wrong", nil)
 	}
@@ -69,7 +67,7 @@ func (a *Auth) Register(payload authDto.RegisterUser) httpresponse.ApiResponse {
 		return *httpresponse.NewApiError(http.StatusInternalServerError, "Oops somenthing went wrong", nil)
 	}
 
-	err = a.EmailService.SendRegisterEmail(payload.Email, token)
+	err = a.EmailService.SendRegisterEmail(payload.Email, token, "user")
 	if err != nil {
 		return *httpresponse.NewApiError(http.StatusServiceUnavailable, "Service error: Unavailable sending email", nil)
 	}
