@@ -10,6 +10,9 @@ import (
 func (a *Auth) Login(payload authDto.LoginRequest) httpresponse.ApiResponse {
 	user, err := a.Repository.Impl.GetUser(payload, a.Db)
 	if err != nil {
+		if err.Error() == "not_found" {
+			return *httpresponse.NewApiError(http.StatusBadRequest, "user not found", nil)
+		}
 		return *httpresponse.NewApiError(http.StatusInternalServerError, "Oops somenthing went wrong", nil)
 	}
 
