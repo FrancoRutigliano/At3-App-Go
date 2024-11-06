@@ -28,7 +28,7 @@ func (s *Server) Run() error {
 	app.Use(healthcheck.New())
 
 	app.Use(cors.New(cors.Config{
-		AllowOrigins: "https://app.atomico3.io, http://localhost:8080, http://localhost:8081",
+		AllowOrigins: "https://app.atomico3.io, http://localhost:8080, http://localhost:3000, http://localhost:3001",
 		AllowMethods: "GET, POST, PUT, PATCH, DELETE, OPTIONS",
 		AllowHeaders: "Origin, Accept, Authorization, Content-Type, X-CSRF-Token",
 	}))
