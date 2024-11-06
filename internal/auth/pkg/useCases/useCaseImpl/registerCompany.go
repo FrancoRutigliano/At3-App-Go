@@ -67,7 +67,7 @@ func (a *Auth) RegisterCompany(payload authDto.RegisterCompanyRequest) httprespo
 		return *httpresponse.NewApiError(http.StatusInternalServerError, "Oops somenthing went wrong", nil)
 	}
 
-	err = a.EmailService.SendRegisterEmail(payload.Email, token)
+	err = a.EmailService.SendRegisterEmail(payload.Email, token, "company")
 	if err != nil {
 		return *httpresponse.NewApiError(http.StatusServiceUnavailable, "Service error: Unavailable sending email", nil)
 	}
