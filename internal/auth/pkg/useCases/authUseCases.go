@@ -5,6 +5,7 @@ import (
 	authUseCaseImpl "at3-back/internal/auth/pkg/useCases/useCaseImpl"
 	"at3-back/internal/shared/infrastructure/data"
 	"at3-back/internal/shared/infrastructure/service"
+	"context"
 	"log"
 	"os"
 )
@@ -14,6 +15,7 @@ type AuthImpl struct {
 }
 
 func (a *AuthImpl) New() {
+	var ctx = context.Background()
 	var repository infraSqlxRepository.SqlxRepository
 
 	repository.New()
@@ -40,6 +42,7 @@ func (a *AuthImpl) New() {
 		Repository:   repository,
 		Db:           db,
 		Redis:        redis,
+		Ctx:          ctx,
 		EmailService: emailService,
 		JwtService:   *jS,
 	}

@@ -7,8 +7,9 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
-func (i *ImplSqlx) FindByEmail(emailParam string, db *sqlx.DB) (bool, error) {
-	query := `SELECT u.email FROM "public".users AS u WHERE u.email = $1 LIMIT 1;`
+func (i *ImplSqlx) FindByEmail(emailParam, tableName string, db *sqlx.DB) (bool, error) {
+	// query := `SELECT u.email FROM "public".users AS u WHERE u.email = $1 LIMIT 1;`
+	query := fmt.Sprintf(`SELECT u.email FROM "public".%s AS u WHERE u.email = $1 LIMIT 1;`, tableName)
 
 	var email string
 	if err := db.Get(&email, query, emailParam); err != nil {
