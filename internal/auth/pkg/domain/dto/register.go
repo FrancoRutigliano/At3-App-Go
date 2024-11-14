@@ -9,9 +9,12 @@ type RegisterUser struct {
 	TaxID            string `json:"tax_id"`
 	WalletAddress    string `json:"wallet_address"`
 	IdentityDocument string `json:"identity_document_url"`
+	Country          string `json:"country"`
+	PostalCode       string `json:"postal_code"`
+	Address          string `json:"address"`
+	AddressNumber    int    `json:"address_number"`
 	IsUIFF           bool   `json:"is_uiff"`
 	IsExposed        bool   `json:"is_exposed"`
-	Role             int    `json:"role"`
 }
 
 type RegisterDb struct {
@@ -24,6 +27,10 @@ type RegisterDb struct {
 	TaxID            string `json:"tax_id"`
 	WalletAddress    string `json:"wallet_address"`
 	IdentityDocument string `json:"identity_document_url"`
+	Country          string `json:"country"`
+	PostalCode       string `json:"postal_code"`
+	Address          string `json:"address"`
+	AddressNumber    int    `json:"address_number"`
 	IsUIFF           bool   `json:"is_uiff"`
 	IsExposed        bool   `json:"is_exposed"`
 	Role             int    `json:"role"`
