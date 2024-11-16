@@ -2,7 +2,6 @@ package service
 
 import (
 	"fmt"
-	"log"
 
 	"github.com/wneessen/go-mail"
 )
@@ -12,16 +11,18 @@ type EmailService struct {
 	From   string
 }
 
-func (e *EmailService) New(smtpHost, smtpPort, from, password string) {
+func (e *EmailService) New(smtpHost, smtpPort, from, password string) error {
 	// Crear un nuevo cliente SMTP
 	client, err := mail.NewClient(smtpHost, mail.WithSMTPAuth(mail.SMTPAuthPlain),
 		mail.WithUsername(from), mail.WithPassword(password))
 	if err != nil {
-		log.Fatalf("failed to create mail client: %s", err)
+		return fmt.Errorf("failed to create mail client: Error:%s", err)
 	}
 	e.Mailer = client
 
 	e.From = from
+
+	return nil
 }
 
 func (e *EmailService) SendRegisterEmail(to, token, entity string) error {

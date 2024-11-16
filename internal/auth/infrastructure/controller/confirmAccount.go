@@ -23,5 +23,5 @@ func (a *Auth) Confirm_account(c *fiber.Ctx) error {
 		return c.Status(response.StatusCode).JSON(fiber.Map{"message": response.Msg, "details": "false"})
 	}
 
-	return c.Status(response.StatusCode).JSON(fiber.Map{"message": response.Msg, "data": response.Data, "details": "true"})
+	return c.Status(response.StatusCode).JSON(fiber.Map{"message": response.Msg, "details": "true"})
 }

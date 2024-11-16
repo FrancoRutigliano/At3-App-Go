@@ -6,6 +6,7 @@ import (
 	httpresponse "at3-back/pkg/httpResponse"
 	"at3-back/pkg/validator"
 	"encoding/json"
+	"log"
 	"net/http"
 	"time"
 
@@ -16,7 +17,8 @@ func (a *Auth) Register(payload authDto.RegisterUser) httpresponse.ApiResponse {
 
 	exists, err := a.Repository.Impl.FindByEmail(payload.Email, "users", a.Db)
 	if err != nil {
-		return *httpresponse.NewApiError(http.StatusInternalServerError, "Oops somenthing went wrong", nil)
+		log.Println("Failed to User findByEmail: Email:", payload.Email, ", Error:", err)
+		return *httpresponse.NewApiError(http.StatusInternalServerError, "An unexpected error occurred", nil)
 	}
 	if exists {
 		return *httpresponse.NewApiError(http.StatusBadRequest, "email already exist", nil)
@@ -26,7 +28,8 @@ func (a *Auth) Register(payload authDto.RegisterUser) httpresponse.ApiResponse {
 
 	hashed, err := hash.HashPassword(payload.Password)
 	if err != nil {
-		return *httpresponse.NewApiError(http.StatusInternalServerError, "Oops somenthing went wrong", nil)
+		log.Println("Failed to hash password: Error:", err)
+		return *httpresponse.NewApiError(http.StatusInternalServerError, "An unexpected error occurred", nil)
 	}
 
 	// parsear fechas
@@ -56,23 +59,27 @@ func (a *Auth) Register(payload authDto.RegisterUser) httpresponse.ApiResponse {
 
 	userJson, err := json.Marshal(user)
 	if err != nil {
-		return *httpresponse.NewApiError(http.StatusInternalServerError, "Oops somenthing went wrong", nil)
+		log.Println("Failed to marshal user JSON: Error:", err)
+		return *httpresponse.NewApiError(http.StatusInternalServerError, "An unexpected error occurred", nil)
 	}
 
 	err = a.Redis.Set(a.Ctx, "uuid:"+user.ID, userJson, 24*time.Hour).Err()
 	if err != nil {
-		return *httpresponse.NewApiError(http.StatusInternalServerError, "Oops somenthing went wrong", nil)
+		log.Println("Redis error Set user: ID", user.ID, "Error:", err)
+		return *httpresponse.NewApiError(http.StatusInternalServerError, "An unexpected error occurred", nil)
 	}
 
 	token, err := a.JwtService.GenerateTokenRegister(map[string]interface{}{
 		"uuid": uuid,
 	})
 	if err != nil {
-		return *httpresponse.NewApiError(http.StatusInternalServerError, "Oops somenthing went wrong", nil)
+		log.Println("Failed to generate token: Error:", err)
+		return *httpresponse.NewApiError(http.StatusInternalServerError, "An unexpected error occurred", nil)
 	}
 
 	err = a.EmailService.SendRegisterEmail(payload.Email, token, "user")
 	if err != nil {
+		log.Println("Failed service email: Error:", err)
 		return *httpresponse.NewApiError(http.StatusServiceUnavailable, "Service error: Unavailable sending email", nil)
 	}
 

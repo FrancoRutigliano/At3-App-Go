@@ -4,8 +4,6 @@ import (
 	authDto "at3-back/internal/auth/pkg/domain/dto"
 	"database/sql"
 	"errors"
-	"fmt"
-	"log"
 
 	"github.com/jmoiron/sqlx"
 )
@@ -20,8 +18,7 @@ func (i *ImplSqlx) GetUser(paylod authDto.LoginRequest, db *sqlx.DB) (authDto.Lo
 		if err == sql.ErrNoRows {
 			return authDto.LoginResponse{}, errors.New("not_found")
 		}
-		log.Println(err.Error())
-		return authDto.LoginResponse{}, fmt.Errorf("error executing query")
+		return authDto.LoginResponse{}, err
 	}
 
 	return user, nil

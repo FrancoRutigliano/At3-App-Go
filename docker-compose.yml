@@ -11,7 +11,10 @@ services:
     volumes:
       - .:/app
     depends_on:
-      - db
+      db:
+        condition: service_healthy 
+      redis:
+        condition: service_healthy
 
   redis:
     image: redis:6.2-alpine
@@ -22,6 +25,11 @@ services:
     command: redis-server  --loglevel verbose --appendonly yes --requirepass ${REDIS_PASS}
     volumes:
     - /c/Users/franc/Desktop/code/Dev/atomico3/redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "${REDIS_PASS}", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
 
 
@@ -36,6 +44,11 @@ services:
       - "5432:5432"
     volumes:
       - /c/Users/franc/Desktop/code/Dev/atomico3/data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
 volumes:
   db-data:
