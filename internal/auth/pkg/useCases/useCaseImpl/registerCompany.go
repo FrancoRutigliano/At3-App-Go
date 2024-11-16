@@ -7,6 +7,7 @@ import (
 	"at3-back/pkg/validator"
 	"context"
 	"encoding/json"
+	"log"
 	"net/http"
 	"time"
 
@@ -18,7 +19,8 @@ func (a *Auth) RegisterCompany(payload authDto.RegisterCompanyRequest) httprespo
 
 	exist, err := a.Repository.Impl.FindByEmail(payload.Email, "companies", a.Db)
 	if err != nil {
-		return *httpresponse.NewApiError(http.StatusInternalServerError, "Oops somenthing went wrong", nil)
+		log.Println("Failed to Company findByEmail: Email:", payload.Email, ", Error:", err)
+		return *httpresponse.NewApiError(http.StatusInternalServerError, "An unexpected error occurred", nil)
 	}
 	if exist {
 		return *httpresponse.NewApiError(http.StatusBadRequest, "email already exist", nil)
@@ -28,7 +30,8 @@ func (a *Auth) RegisterCompany(payload authDto.RegisterCompanyRequest) httprespo
 
 	hashedPassword, err := hash.HashPassword(payload.Password)
 	if err != nil {
-		return *httpresponse.NewApiError(http.StatusInternalServerError, "Oops somenthing went wrong", nil)
+		log.Println("Failed to hash password: Error:", err)
+		return *httpresponse.NewApiError(http.StatusInternalServerError, "An unexpected error occurred", nil)
 	}
 
 	createdAt := validator.DateToUnix()
@@ -52,23 +55,27 @@ func (a *Auth) RegisterCompany(payload authDto.RegisterCompanyRequest) httprespo
 
 	companyJson, err := json.Marshal(companyDb)
 	if err != nil {
-		return *httpresponse.NewApiError(http.StatusInternalServerError, "Oops somenthing went wrong", nil)
+		log.Println("Failed to marshal company JSON: Error:", err)
+		return *httpresponse.NewApiError(http.StatusInternalServerError, "An unexpected error occurred", nil)
 	}
 
 	err = a.Redis.Set(ctx, "uuid"+id, companyJson, 24*time.Hour).Err()
 	if err != nil {
-		return *httpresponse.NewApiError(http.StatusInternalServerError, "Oops somenthing went wrong", nil)
+		log.Println("Redis error Set user: ID", companyDb.ID, "Error:", err)
+		return *httpresponse.NewApiError(http.StatusInternalServerError, "An unexpected error occurred", nil)
 	}
 
 	token, err := a.JwtService.GenerateTokenRegister(map[string]interface{}{
 		"uuid": id,
 	})
 	if err != nil {
-		return *httpresponse.NewApiError(http.StatusInternalServerError, "Oops somenthing went wrong", nil)
+		log.Println("Failed to generate token: Error:", err)
+		return *httpresponse.NewApiError(http.StatusInternalServerError, "An unexpected error occurred", nil)
 	}
 
 	err = a.EmailService.SendRegisterEmail(payload.Email, token, "company")
 	if err != nil {
+		log.Println("Failed service email: Error:", err)
 		return *httpresponse.NewApiError(http.StatusServiceUnavailable, "Service error: Unavailable sending email", nil)
 	}
 

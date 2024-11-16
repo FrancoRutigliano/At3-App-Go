@@ -2,8 +2,6 @@ package infraSqlxRepository
 
 import (
 	authDto "at3-back/internal/auth/pkg/domain/dto"
-	"fmt"
-	"log"
 
 	"github.com/jmoiron/sqlx"
 )
@@ -18,8 +16,7 @@ func (a *ImplSqlx) CreateUserAccount(payload *authDto.RegisterDb, db *sqlx.DB) e
 		payload.WalletAddress, payload.IdentityDocument, payload.IsUIFF, payload.IsExposed, payload.Role, payload.CreatedAt, payload.UpdatedAt,
 		payload.Country, payload.PostalCode, payload.Address, payload.AddressNumber)
 	if err != nil {
-		log.Println("error executing query--> ", err)
-		return fmt.Errorf("oops somenthing got wrong")
+		return err
 	}
 
 	return nil

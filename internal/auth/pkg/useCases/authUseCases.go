@@ -22,17 +22,20 @@ func (a *AuthImpl) New() {
 
 	db, err := data.GetConnection()
 	if err != nil {
-		log.Fatal("error to instance db")
+		log.Fatal("Failed to instance DB conn: Error:", err)
 	}
 
 	redis, err := data.NewRedisConnnection()
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal("Failed to instance Redis conn: Error:", err)
 	}
 
 	var emailService service.EmailService
 
-	emailService.New(os.Getenv("SMTP_HOST"), "465", "no-reply@atomico3.io", os.Getenv("MAIL_PASSWORD"))
+	err = emailService.New(os.Getenv("SMTP_HOST"), "465", "no-reply@atomico3.io", os.Getenv("MAIL_PASSWORD"))
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	var jwtService service.JwtService
 

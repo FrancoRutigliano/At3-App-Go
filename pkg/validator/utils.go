@@ -2,6 +2,7 @@ package validator
 
 import (
 	httpresponse "at3-back/pkg/httpResponse"
+	"log"
 	"net/http"
 	"time"
 
@@ -10,6 +11,7 @@ import (
 
 func Payload(c *fiber.Ctx, payload interface{}) httpresponse.ApiResponse {
 	if err := c.BodyParser(payload); err != nil {
+		log.Println("Failed to parse body request: Error:", err)
 		return *httpresponse.NewApiError(http.StatusBadRequest, "invalid request", nil)
 	}
 

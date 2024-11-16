@@ -17,7 +17,7 @@ func (i *ImplSqlx) FindByEmail(emailParam, tableName string, db *sqlx.DB) (bool,
 		if err == sql.ErrNoRows {
 			return false, nil
 		}
-		return false, fmt.Errorf("error executing query: %w", err)
+		return false, err
 	}
 
 	return true, nil

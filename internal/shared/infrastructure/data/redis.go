@@ -2,7 +2,6 @@ package data
 
 import (
 	"context"
-	"errors"
 	"os"
 
 	"github.com/redis/go-redis/v9"
@@ -17,7 +16,7 @@ func NewRedisConnnection() (*redis.Client, error) {
 	})
 	_, err := rdb.Ping(ctx).Result()
 	if err != nil {
-		return nil, errors.New("error to ping redis")
+		return nil, err
 	}
 
 	return rdb, nil
