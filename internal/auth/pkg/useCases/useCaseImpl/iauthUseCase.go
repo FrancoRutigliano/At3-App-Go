@@ -14,6 +14,7 @@ import (
 type IauthUseCase interface {
 	Register(authDto.RegisterUser) httpresponse.ApiResponse
 	Confirm(string, string) httpresponse.ApiResponse
+	ConfirmUserAccount(string, string) httpresponse.ApiResponse
 	Login(authDto.LoginRequest) httpresponse.ApiResponse
 	RegisterCompany(authDto.RegisterCompanyRequest) httpresponse.ApiResponse
 }

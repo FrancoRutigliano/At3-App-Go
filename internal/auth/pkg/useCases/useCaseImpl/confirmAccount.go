@@ -13,6 +13,7 @@ import (
 func (a *Auth) Confirm(tokenS, entity string) httpresponse.ApiResponse {
 	var user authDto.RegisterDb
 	var company authDto.RegisterCompanyDB
+	var dtoLoginUser authDto.LoginRequest
 
 	// Validar el token
 	token, err := a.JwtService.ValidateTokenFromQuery(tokenS)
@@ -54,6 +55,17 @@ func (a *Auth) Confirm(tokenS, entity string) httpresponse.ApiResponse {
 			return *httpresponse.NewApiError(http.StatusInternalServerError, "An unexpected error occurred", nil)
 		}
 
+		dtoLogin := &authDto.LoginRequest{
+			Email:    user.Email,
+			Password: user.Password,
+		}
+
+		_, err = a.Repository.Impl.GetUser(*dtoLogin, a.Db)
+		if err != nil {
+			log.Println("DB error login user account: Error: ", err)
+			return *httpresponse.NewApiError(http.StatusInternalServerError, "An unexpected error ocuerred", nil)
+		}
+
 		// Eliminar clave en Redis
 		err = a.Redis.Del(a.Ctx, "uuid:"+id).Err()
 		if err != nil {
@@ -93,5 +105,5 @@ func (a *Auth) Confirm(tokenS, entity string) httpresponse.ApiResponse {
 		}
 	}
 
-	return *httpresponse.NewApiError(http.StatusOK, "User validated", nil)
+	return *httpresponse.NewApiError(http.StatusOK, "User validated", dtoLoginUser)
 }
