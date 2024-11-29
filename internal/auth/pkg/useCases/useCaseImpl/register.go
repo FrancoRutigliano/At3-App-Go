@@ -8,6 +8,7 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/google/uuid"
@@ -15,7 +16,7 @@ import (
 
 func (a *Auth) Register(payload authDto.RegisterUser) httpresponse.ApiResponse {
 
-	exists, err := a.Repository.Impl.FindByEmail(payload.Email, "users", a.Db)
+	exists, err := a.Repository.Impl.FindByEmail(strings.ToLower(payload.Email), "users", a.Db)
 	if err != nil {
 		log.Println("Failed to User findByEmail: Email:", payload.Email, ", Error:", err)
 		return *httpresponse.NewApiError(http.StatusInternalServerError, "An unexpected error occurred", nil)
@@ -38,17 +39,17 @@ func (a *Auth) Register(payload authDto.RegisterUser) httpresponse.ApiResponse {
 
 	user := &authDto.RegisterDb{
 		ID:               uuid,
-		FirstName:        payload.FirstName,
-		LastName:         payload.LastName,
-		Email:            payload.Email,
+		FirstName:        strings.ToLower(payload.FirstName),
+		LastName:         strings.ToLower(payload.LastName),
+		Email:            strings.ToLower(payload.Email),
 		Password:         hashed,
 		PhoneNumber:      payload.PhoneNumber,
 		TaxID:            payload.TaxID,
 		WalletAddress:    payload.WalletAddress,
 		IdentityDocument: payload.IdentityDocument,
-		Country:          payload.Country,
+		Country:          strings.ToLower(payload.Country),
 		PostalCode:       payload.PostalCode,
-		Address:          payload.Address,
+		Address:          strings.ToLower(payload.Address),
 		AddressNumber:    payload.AddressNumber,
 		IsUIFF:           payload.IsUIFF,
 		IsExposed:        payload.IsExposed,
