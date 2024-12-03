@@ -17,6 +17,7 @@ type IauthUseCase interface {
 	ConfirmUserAccount(string, string) httpresponse.ApiResponse
 	Login(authDto.LoginRequest) httpresponse.ApiResponse
 	RegisterCompany(authDto.RegisterCompanyRequest) httpresponse.ApiResponse
+	ChangePassword(authDto.ResetRequest) httpresponse.ApiResponse
 }
 
 type Auth struct {
